@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>ESP32 LED Control</title>
+</head>
+
+<body>
+  <h1>ESP32 LED Control</h1>
+  <button onclick="sendCommand('LED_ON')">Turn ON</button>
+  <button onclick="sendCommand('LED_OFF')">Turn OFF</button>
+
+  <script>
+    const socket = new WebSocket(location.origin.replace(/^http/, 'ws'));
+
+    socket.onopen = () => {
+      console.log("Connected to server");
+      socket.send("BROWSER");
+    };
+
+    function sendCommand(cmd) {
+      socket.send(cmd);
+    }
+  </script>
+</body>
+
+</html>
