@@ -13,15 +13,23 @@ const wss = new WebSocket.Server({ server });
 let espSocket = null;
 
 wss.on('connection', (ws) => {
-  ws.on('message', message => {
+  ws.on('message', (message) => {
     message = message.toString();
     console.log('Received:', message);
 
     if (message === "ESP") {
       espSocket = ws;
-    } else {
+      console.log("ESP32 connected");
+    } 
+    else if (message === "BROWSER") {
+      console.log("Browser connected");
+    } 
+    else {
       if (espSocket && espSocket.readyState === WebSocket.OPEN) {
         espSocket.send(message);
+        console.log("Sent to ESP:", message);
+      } else {
+        console.log("ESP32 not connected");
       }
     }
   });

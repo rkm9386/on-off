@@ -2,13 +2,21 @@
 <html>
 
 <head>
-  <title>ESP32 LED Control</title>
+  <title>ESP32 Remote Control</title>
 </head>
 
 <body>
-  <h1>ESP32 LED Control</h1>
+  <h1>ESP32 Remote Control</h1>
+
+  <!-- LED Control -->
   <button onclick="sendCommand('LED_ON')">Turn ON</button>
   <button onclick="sendCommand('LED_OFF')">Turn OFF</button>
+
+  <br><br>
+
+  <!-- Send Custom Message -->
+  <input type="text" id="msg" placeholder="Type message for ESP32">
+  <button onclick="sendCustom()">Send to ESP32</button>
 
   <script>
     const socket = new WebSocket(location.origin.replace(/^http/, 'ws'));
@@ -20,6 +28,14 @@
 
     function sendCommand(cmd) {
       socket.send(cmd);
+    }
+
+    function sendCustom() {
+      const msg = document.getElementById("msg").value;
+      if (msg.trim() !== "") {
+        socket.send(msg);
+        document.getElementById("msg").value = "";
+      }
     }
   </script>
 </body>
