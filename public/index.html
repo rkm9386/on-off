@@ -6,33 +6,45 @@
 </head>
 
 <body>
-  <h1>ESP32 Remote Control</h1>
+  <h1>ESP32 Remote Control with Debug</h1>
 
-  <!-- LED Control -->
   <button onclick="sendCommand('LED_ON')">Turn ON</button>
   <button onclick="sendCommand('LED_OFF')">Turn OFF</button>
 
   <br><br>
 
-  <!-- Send Custom Message -->
   <input type="text" id="msg" placeholder="Type message for ESP32">
   <button onclick="sendCustom()">Send to ESP32</button>
 
+  <pre id="log"></pre>
+
   <script>
+    const logBox = document.getElementById("log");
+    function log(msg) {
+      console.log(msg);
+      logBox.textContent += msg + "\n";
+    }
+
     const socket = new WebSocket(location.origin.replace(/^http/, 'ws'));
 
     socket.onopen = () => {
-      console.log("Connected to server");
+      log("🌐 Connected to server");
       socket.send("BROWSER");
     };
 
+    socket.onmessage = (event) => {
+      log("📩 From server: " + event.data);
+    };
+
     function sendCommand(cmd) {
+      log("➡️ Sending command: " + cmd);
       socket.send(cmd);
     }
 
     function sendCustom() {
       const msg = document.getElementById("msg").value;
       if (msg.trim() !== "") {
+        log("➡️ Sending custom: " + msg);
         socket.send(msg);
         document.getElementById("msg").value = "";
       }
